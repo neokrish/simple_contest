@@ -1,0 +1,21 @@
+; $Id: simple_contest_uc_coupon.info,v 1.1.2.2 2010/07/09 04:36:13 4vinoth Exp $
+name = Simple Contest ubercart Coupon
+description = "Simple Contest wintegration with Ubercart Coupon"
+core = 6.x
+dependencies[] = simple_contest
+dependencies[] = uc_coupon
+package = "Contest"
+
+; Information added by drupal.org packaging script on 2009-11-23
+version = "6.x-1.0-dev"
+core = "6.x"
+project = "simple_contest"
+datestamp = "1258977639"
+
+
+; Information added by drupal.org packaging script on 2010-07-11
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "simple_contest"
+datestamp = "1278807421"
+

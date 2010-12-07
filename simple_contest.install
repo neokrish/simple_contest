@@ -1,0 +1,111 @@
+<?php
+// $Id: simple_contest.install,v 1.1.2.2 2010/07/10 04:59:23 4vinoth Exp $
+
+function simple_contest_install() {
+  drupal_install_schema('simple_contest');
+}
+
+
+
+function simple_contest_schema() {
+  $schema['simple_contest_results'] = array(
+    'fields' => array(
+      'nid' => array(
+        'description' => t('The primary identifier for contest node.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'uid' => array(
+        'type' => 'int',
+        'description' => t('winner user id.'),
+        'not null' => TRUE),
+      'wnid' => array(
+        'type' => 'int',
+        'description' => t('won node id. may be null if contest type is user.'),
+        'not null' => FALSE),
+			'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE),
+    ),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'nid_uid' => array('nid', 'uid'),
+      'nid_uid_wnid' => array('nid', 'uid', 'wnid'),
+      'uid_wnid' => array('uid', 'wnid'),
+    ),
+  );
+  
+	$schema['simple_contest_statistics'] = array(
+    'fields' => array(
+      'nid' => array(
+        'description' => t('The primary identifier for contest node.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'status' => array(
+        'type' => 'int',
+        'description' => t('contest status.'),
+        'not null' => TRUE),
+      'winners_count' => array(
+        'type' => 'int',
+        'description' => t('actual total winenrs.'), // 
+        'not null' => FALSE),
+			'participants_count' => array(
+        'type' => 'int',
+        'description' => t('total participants.'), // 
+        'not null' => FALSE),
+			'timestamp' => array(
+        'type' => 'int',
+				'description' => t('when the results were calculated.'),
+        'not null' => TRUE),
+    ),
+		'primary key' => array('nid'),
+    'indexes' => array(
+      'status' => array('status'),
+    ),
+  );
+	
+	$schema['simple_contest_repeat'] = array(
+    'fields' => array(
+			'rid' => array(
+        'type' => 'serial',
+				'description' => t('row id'),
+        'not null' => TRUE),
+			'type' => array(
+        'type' => 'varchar',				
+        'length' => 32,
+				'description' => t('node type.'),
+        'not null' => TRUE),
+			'start_date' => array(
+        'type' => 'datetime',
+				'description' => t('start date time for this Contest.'),
+        'not null' => TRUE),
+			'end_date' => array(
+        'type' => 'datetime',
+				'description' => t('end date time for this Contest.'),
+        'not null' => TRUE),
+			'nid' => array(
+        'description' => t('The primary identifier for contest node. NULL if not yet created.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE),
+    ),
+		'primary key' => array('rid'),
+    'indexes' => array(
+      'type_start_nid' => array('type', 'start_date', 'nid'),
+			'type_start' => array('type', 'start_date'),
+			'type' => array('type'),			
+    ),
+  );
+
+  return $schema;
+}
+
+function simple_contest_update_1() {
+	$result = array();
+  if (!db_column_exists('simple_contest_statistics', 'timestamp')) {
+    db_change_field($result, 'simple_contest_statistics', 'timstamp', 'timestamp', array('type' => 'int', 'size' => 'small', 'not null' => TRUE, 'default' => 0));
+  }
+  return $result;
+}
+
